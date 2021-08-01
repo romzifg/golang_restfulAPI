@@ -3,6 +3,7 @@ package handler
 import (
 	"bwa_startup/helper"
 	"bwa_startup/user"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,10 +19,6 @@ func NewUserHandler(userService user.Service) *userHandler {
 }
 
 func (h *userHandler) RegisterUser(c *gin.Context) {
-	// tangkap input dari user
-	// map input dari user ke struct RegisterUserInput
-	//struct di atas dipassing sebagai parameter service
-
 	var input user.RegisterUserInput
 
 	err := c.ShouldBindJSON(&input)
@@ -114,4 +111,50 @@ func (h *userHandler) CheckEmailAvailable(c *gin.Context) {
 
 	response := helper.APIResponse(metaMessage, http.StatusOK, "Success", data)
 	c.JSON(http.StatusOK, response)
+}
+
+func (h *userHandler) UploadAvatar(c *gin.Context){
+	// input dari user
+	// simpan gambar di folder images
+	// kita panggil di repo
+	// JWT (sementara hardcode)
+	// repo ambil data user yg ID = 1
+	// repo update data user simpan lokasi images
+
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		data := gin.H{"is uploaded": false}
+		response := helper.APIResponse("Failed to upload Avatar Image", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// nanti dapat dari JWT
+	userID := 1
+
+	path := fmt.Sprintf("images/%d-%s", userID, file.Filename)
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		data := gin.H{"is uploaded": false}
+		response := helper.APIResponse("Failed to upload Avatar Image", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	_, err = h.userService.SaveAvatar(userID, path)
+	if err != nil {
+		data := gin.H{"is uploaded": false}
+		response := helper.APIResponse("Failed to upload Avatar Image", http.StatusBadRequest, "error", data)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+		data := gin.H{"is uploaded": true}
+		response := helper.APIResponse("Success Uploaded Avatar Image", http.StatusOK, "success", data)
+
+		c.JSON(http.StatusOK, response)
 }
