@@ -1,11 +1,17 @@
 // melakukan mapping dari struct input ke struct handler
 package user
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"errors"
+
+	"golang.org/x/crypto/bcrypt"
+)
+
 
 
 type Service interface {
 	RegisterUser(input RegisterUserInput) (User, error)
+	Login(input LoginInput) (User, error)
 }
 
 type service struct {
@@ -37,4 +43,25 @@ func(s *service) RegisterUser(input RegisterUserInput) (User, error) {
 	}
 
 	return newUser, nil
+}
+
+func (s *service) Login(input LoginInput) (User, error) {
+	email := input.Email
+	password := input.Password
+
+	user, err := s.repository.FindByEmail(email)
+	if err != nil {
+		return user, err
+	}
+
+	if user.ID == 0 {
+		return user, errors.New("User not Found")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
