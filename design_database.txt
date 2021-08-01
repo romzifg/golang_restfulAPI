@@ -1,0 +1,45 @@
+Analisis Entity Database:
+
+- User
+	1. id : int (primary_key)
+	2. name : varchar
+	3. ocupation : varchar
+	4. email : varchar
+	5. password_hash : varchar
+	6. avatar_filename : varchar
+	7. role : varchar
+	8. token : varchar
+	9. created_at : datetime
+	10. update_at : datetime
+
+- Campaigns
+	1. id : int (primary_key)
+	2. name : varchar
+	3. short_describe : varchar
+	4. description : text
+	5. goal_amount : int
+	6. current_amount : int
+	7. user_id : int (foreign_key)
+	8. perks : text
+	9. backer_count : int
+	10. slug : varchar
+	11. created_at : datetime
+	12. update_at : datetime
+
+- Campaign Images
+	1. id : int (primary_key)
+	2. campaign_id : int (foreign_key)
+	3. file_name : varchar
+	4. is_primary : boolean (tinyint)
+	5. created_at : datetime
+	6. update_at : datetime
+
+- Transaction
+	1. id : int (priamry_key)
+	2. campaign_id : int (foreign_key)
+	3. user_id : int (foreign_key)
+	4. amount: int
+	5. status : varchar
+	6. code : varchar
+	7. created_at : datetime
+	8. update_at : datetime
