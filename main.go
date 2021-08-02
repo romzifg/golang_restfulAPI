@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bwa_startup/auth"
 	"bwa_startup/handler"
 	"bwa_startup/user"
 	"log"
@@ -12,7 +13,7 @@ import (
 
 func main() {
 	// connect database mysql with GO
-	dsn := "root:@tcp(127.0.0.1:3306)/bwa_startup?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:root@tcp(127.0.0.1:3306)/bwa_startup?charset=utf8mb4&parseTime=True&loc=Local"
   	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	// Handle error 
@@ -22,8 +23,9 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
+	authService := auth.NewService()
 
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(userService, authService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
