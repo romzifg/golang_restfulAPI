@@ -121,3 +121,10 @@ func (h *campaignHandler) UpdateCampaign(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 	return
 }
+
+// service : memanggil point no 2 di repo lalu panggil repo point 1 
+// tangkap input dan ubah struct input
+// save image campaign ke suatu folder
+// repository : 
+// 1. create image/save data image ke data images
+// 2. ubah is_primary true ke false jk ada lebih dari satu is_primary
