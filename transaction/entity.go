@@ -1,6 +1,9 @@
 package transaction
 
-import "time"
+import (
+	"bwa_startup/user"
+	"time"
+)
 
 type Transaction struct {
 	ID         int 		 `json:"id"`
@@ -9,6 +12,7 @@ type Transaction struct {
 	Amount     int 		 `json:"amount"`
 	Status     string 	 `json:"status"`
 	Code       string 	 `json:"code"`
+	User 	   user.User
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }
