@@ -5,6 +5,7 @@ import (
 	"bwa_startup/campaign"
 	"bwa_startup/handler"
 	"bwa_startup/helper"
+	"bwa_startup/payment"
 	"bwa_startup/transaction"
 	"bwa_startup/user"
 	"log"
@@ -33,7 +34,8 @@ func main() {
 
 	userService := user.NewService(userRepository)
 	campaignService := campaign.NewService(campaignRepository)
-	transactionService := transaction.NewService(transactionRepository, campaignRepository)
+	paymentService := payment.NewService()
+	transactionService := transaction.NewService(transactionRepository, campaignRepository, paymentService)
 	authService := auth.NewService()
 
 	userHandler := handler.NewUserHandler(userService, authService)
@@ -58,6 +60,7 @@ func main() {
 	
 	api.GET("/campaigns/:id/transactions", authMiddleware(authService, userService), transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", authMiddleware(authService, userService), transactionHandler.GetUserTransactions)
+	api.POST("/transactions", authMiddleware(authService, userService), transactionHandler.CreateTransaction)
 
 	router.Run()
 }
